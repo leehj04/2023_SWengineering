@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>출발지와 도착지 추가하기</title>
+  <style>
+    .input-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .input-group input {
+      margin-right: 10px;
+    }
+  </style>
+  <script>
+    // 출발지와 도착지 영역 추가
+    function addDestination() {
+      var container = document.getElementById("destination-container");
+      
+      // 새로운 출발지와 도착지 영역 생성
+      var inputGroup = document.createElement("div");
+      inputGroup.className = "input-group";
+      
+      var startInput = document.createElement("input");
+      startInput.type = "text";
+      startInput.placeholder = "출발지";
+      
+      var endInput = document.createElement("input");
+      endInput.type = "text";
+      endInput.placeholder = "도착지";
+      
+      // 생성한 요소들을 추가
+      inputGroup.appendChild(startInput);
+      inputGroup.appendChild(endInput);
+      container.appendChild(inputGroup);
+    }
+  </script>
+</head>
+<body>
+  <h1>출발지와 도착지 추가하기</h1>
+  
+  <div id="destination-container">
+    <div class="input-group">
+      <input type="text" placeholder="출발지">
+      <input type="text" placeholder="도착지">
+    </div>
+  </div>
+  
+  <button onclick="addDestination()">추가</button>
+</body>
+</html>
+
