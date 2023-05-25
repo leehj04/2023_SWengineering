@@ -7,7 +7,8 @@
         <link rel="stylesheet" href="http://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
         <link rel="stylesheet" href="style.css">
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-        
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzVq_1RD-vsTLD06x1zh6BocQr917EVgI&libraries=places"></script>
+
         <style>
             .input-group {
               display: flex;
@@ -24,22 +25,62 @@
                 border-radius: 15px;
                 outline: none;
                 padding-left: 10px;
-                background-color: rgb(233, 233, 233);
+                background-color: rgb(255, 255, 255);
+                border-radius: 10px;
+                border: 1px solid var(--main-color);
             }
 
-            .Scope1_main button {
+            .Scope1_main {
+                background: rgb(233, 233, 233);
+                outline: none;
+                border-radius: 10px;
+                padding: .5rem 1rem;
+                margin-bottom : 2rem;
+
+            }
+
+            .Scope1_main > h3 {
+                text-align: center;
+            } 
+
+            .Scope2_main {
+                background: rgb(233, 233, 233);
+                outline: none;
+                border-radius: 10px;
+                padding: .5rem 1rem;
+                margin-bottom : 2rem;
+            }
+
+            .Scope2_main > input {
+                background: rgb(255, 255, 255);
+                outline: none;
+                border-radius: 10px;
+                padding: .5rem 1rem;
+                margin-bottom : 2rem;
+                border: 1px solid var(--main-color);
+            }
+
+            .Scope3_main {
+                background: rgb(233, 233, 233);
+                outline: none;
+                border-radius: 10px;
+                padding: .5rem 1rem;
+                margin-bottom : 2rem;
+            }
+
+            .Scope3_main button {
                 background: var(--main-color);
                 border-radius: 10px;
                 color: #fff;
                 font-size: .8rem;
                 padding: .5rem 1rem;
                 border: 1px solid var(--main-color);
+                cursor : pointer;
             }
         </style>
 
         <script>
-            // 출발지와 도착지 영역 추가
-            function addDestination() {
+        function addDestination() {
             var container = document.getElementById("destination-container");
             
             // 새로운 출발지와 도착지 영역 생성
@@ -58,9 +99,54 @@
             inputGroup.appendChild(startInput);
             inputGroup.appendChild(endInput);
             container.appendChild(inputGroup);
-            }
+            
+            // 거리 계산 및 표시
+            var calculateDistance = function() {
+            var start = startInput.value;
+            var end = endInput.value;
+            
+            var geocoder = new google.maps.Geocoder();
+            
+            geocoder.geocode({ address: start }, function(results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                var startLocation = results[0].geometry.location;
+                
+                geocoder.geocode({ address: end }, function(results, status) {
+                    if (status === google.maps.GeocoderStatus.OK) {
+                    var endLocation = results[0].geometry.location;
+                    
+                    var service = new google.maps.DistanceMatrixService();
+                    service.getDistanceMatrix(
+                        {
+                        origins: [startLocation],
+                        destinations: [endLocation],
+                        travelMode: google.maps.TravelMode.DRIVING
+                        },
+                        function(response, status) {
+                        if (status === google.maps.DistanceMatrixStatus.OK) {
+                            var distance = response.rows[0].elements[0].distance.text;
+                            console.log("거리: " + distance);
+                        } else {
+                            console.log("거리를 계산할 수 없습니다.");
+                        }
+                        }
+                    );
+                    } else {
+                    console.log("도착지를 찾을 수 없습니다.");
+                    }
+                });
+                } else {
+                console.log("출발지를 찾을 수 없습니다.");
+                }
+            });
+            };
+            
+            var calculateButton = document.createElement("button");
+            calculateButton.textContent = "거리 계산";
+            calculateButton.addEventListener("click", calculateDistance);
+            inputGroup.appendChild(calculateButton);
+        }
         </script>
-
     </head>
     <body>
 
@@ -136,33 +222,38 @@
                     </div>
                 </div>
 
-                <div class = "Scope1">
+                <div class = "Scope2">
                     <h2>
                         Scope 2 탄소배출량
                     </h2>
                     <h3>
                         - Scope 2에서는 사용한 전력량에 대한 탄소배출량을 알아봅니다.
                     </h3>
-                    <div class = "Scope1_main">
-                        <div id="map"></div>
+                    <div class = "Scope2_main">
+                        <h4>
+                            현재 한전의 CO2 배출 계산기 기준 전기 1kw당 CO2 배출량은 0.424kg 입니다.
+                        </h4>
+                        
+                        <input type = "text" placeholder = "전기사용량(Kw)">
                     </div>
                 </div>
 
-                <div class = "Scope1">
+                <div class = "Scope3">
                     <h2>
                         Scope 3 탄소배출량
                     </h2>
                     <h3>
                         Scope 3 에서는 UpStream과 DownStream 중 DownStream에서 발생하는 탄소 배출량을 알아봅니다.
                     </h3>
-                    <div class = "Scope1_main">
+                    <div class = "Scope3_main">
                         <h4>
-                            공사중입니다!
                         </h4>
+                        
+                            <div id="map"></div>
                             <div id="destination-container">
                                 <div class="input-group">
-                                  <input type="text" placeholder="출발지">
-                                  <input type="text" placeholder="도착지">
+                                    <input type="text" placeholder="출발지">
+                                    <input type="text" placeholder="도착지">
                                 </div>
                             </div>
 
