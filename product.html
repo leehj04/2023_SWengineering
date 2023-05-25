@@ -167,11 +167,11 @@
             <div class="sidebar-menu">
                 <ul>
                     <li>
-                        <a href="main.html" class="active"><span class="las la-igloo"></span>
+                        <a href="main.html"><span class="las la-igloo"></span>
                             <span>Dashboard</span></a>
                     </li>                 
                     <li>
-                        <a href="product.html"><span class="las la-shopping-bag"></span>
+                        <a href="product.html" class="active"><span class="las la-shopping-bag"></span>
                             <span>Product</span></a>
                     </li>
                     <li>
@@ -198,7 +198,7 @@
             <header>
                 <h2>
                     <label for="nav-toggle">
-                        <span class="las la-bars"></span>
+                        <span class="las la-bars" style="cursor : pointer;"></span>
                     </label>
                     Product
                 </h2>
@@ -234,10 +234,10 @@
                     <h2>
                         Scope 2 탄소배출량
                     </h2>
-                    <h3>
-                        - Scope 2에서는 사용한 전력량에 대한 탄소배출량을 알아봅니다.
-                    </h3>
-                    <div class = "Scope2_main">
+                    <h4 style="color : #495057; padding-bottom : 0.5rem;">
+                        Scope 2에서는 사용한 전력량에 대한 탄소배출량을 알아봅니다.
+                    </h4>
+                    <div class = "Scope2_main" >
                         <h4>
                             현재 한전의 CO2 배출 계산기 기준 전기 1kw당 CO2 배출량은 0.424kg 입니다.
                         </h4>
@@ -265,6 +265,9 @@
                             </div>
 
                             <button onclick="addDestination()">추가</button>  
+                            <div class = "total_cal" style="padding-top : 0.5rem; color : #0099ff;">
+                                <h3>누적 총합 : </h3>
+                            </div>
                     </div>
                 </div>
 
@@ -277,7 +280,8 @@
                     
                     <button style="position: right;">결과 확인</button>
                     <div class = "Analysis_main">
-                        <h4>Test</h4>
+                        <img class="penguin" src = "penguin300.png" style="margin-left: auto; margin-right: auto; display: block;" width = "300px", height = "auto">
+
                     </div>
                 </div>
 
