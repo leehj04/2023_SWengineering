@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="http://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
         <link rel="stylesheet" href="style.css">
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzVq_1RD-vsTLD06x1zh6BocQr917EVgI&libraries=places"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=<Key>&libraries=places"></script>
 
         <style>
             .input-group {
@@ -76,6 +76,14 @@
                 padding: .5rem 1rem;
                 border: 1px solid var(--main-color);
                 cursor : pointer;
+            }
+
+            .Analysis_main {
+                background: rgb(233, 233, 233);
+                outline: none;
+                border-radius: 10px;
+                padding: .5rem 1rem;
+                margin-bottom : 2rem;
             }
         </style>
 
@@ -233,8 +241,8 @@
                         <h4>
                             현재 한전의 CO2 배출 계산기 기준 전기 1kw당 CO2 배출량은 0.424kg 입니다.
                         </h4>
-                        
-                        <input type = "text" placeholder = "전기사용량(Kw)">
+
+                        <input type = "number" placeholder = "전기사용량(Kw)">
                     </div>
                 </div>
 
@@ -258,6 +266,16 @@
                             </div>
 
                             <button onclick="addDestination()">추가</button>  
+                    </div>
+                </div>
+
+                <div class = "Analysis">
+                    <h2>
+                        전체 분석
+                    </h2>
+                    <button>결과 확인</button>
+                    <div class = "Analysis_main">
+                        <h4>Test</h4>
                     </div>
                 </div>
 
