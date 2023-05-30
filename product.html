@@ -7,7 +7,6 @@
         <link rel="stylesheet" href="http://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
         <link rel="stylesheet" href="style.css">
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=<Key>&libraries=places"></script>
 
         <style>
             .input-group {
@@ -59,6 +58,16 @@
                 margin-bottom : 2rem;
                 border: 1px solid var(--main-color);
             }
+            
+            .Scope2_main button {
+                background: var(--main-color);
+                border-radius: 10px;
+                color: #fff;
+                font-size: .8rem;
+                padding: .5rem 1rem;
+                border: 1px solid var(--main-color);
+                cursor : pointer;
+            }
 
             .Scope3_main {
                 background: rgb(233, 233, 233);
@@ -85,76 +94,78 @@
                 padding: .5rem 1rem;
                 margin-bottom : 2rem;
             }
+
+            .write > button {
+                background: var(--main-color);
+                border-radius: 10px;
+                color: #fff;
+                font-size: .8rem;
+                padding: .5rem 1rem;
+                border: 1px solid var(--main-color);
+                cursor : pointer;
+            }
         </style>
 
-        <script>
-        function addDestination() {
-            var container = document.getElementById("destination-container");
-            
-            // 새로운 출발지와 도착지 영역 생성
-            var inputGroup = document.createElement("div");
-            inputGroup.className = "input-group";
-            
-            var startInput = document.createElement("input");
-            startInput.type = "text";
-            startInput.placeholder = "출발지";
-            
-            var endInput = document.createElement("input");
-            endInput.type = "text";
-            endInput.placeholder = "도착지";
-            
-            // 생성한 요소들을 추가
-            inputGroup.appendChild(startInput);
-            inputGroup.appendChild(endInput);
-            container.appendChild(inputGroup);
-            
-            // 거리 계산 및 표시
-            var calculateDistance = function() {
-            var start = startInput.value;
-            var end = endInput.value;
-            
-            var geocoder = new google.maps.Geocoder();
-            
-            geocoder.geocode({ address: start }, function(results, status) {
-                if (status === google.maps.GeocoderStatus.OK) {
-                var startLocation = results[0].geometry.location;
-                
-                geocoder.geocode({ address: end }, function(results, status) {
-                    if (status === google.maps.GeocoderStatus.OK) {
-                    var endLocation = results[0].geometry.location;
-                    
-                    var service = new google.maps.DistanceMatrixService();
-                    service.getDistanceMatrix(
-                        {
-                        origins: [startLocation],
-                        destinations: [endLocation],
-                        travelMode: google.maps.TravelMode.DRIVING
-                        },
-                        function(response, status) {
-                        if (status === google.maps.DistanceMatrixStatus.OK) {
-                            var distance = response.rows[0].elements[0].distance.text;
-                            console.log("거리: " + distance);
-                        } else {
-                            console.log("거리를 계산할 수 없습니다.");
-                        }
-                        }
-                    );
-                    } else {
-                    console.log("도착지를 찾을 수 없습니다.");
-                    }
-                });
-                } else {
-                console.log("출발지를 찾을 수 없습니다.");
-                }
-            });
-            };
-            
-            var calculateButton = document.createElement("button");
-            calculateButton.textContent = "거리 계산";
-            calculateButton.addEventListener("click", calculateDistance);
-            inputGroup.appendChild(calculateButton);
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#calculateBtn').click(function() {
+      var distance = $('#distanceInput').val(); // 입력된 거리 가져오기
+
+      // API 요청 보내기
+      $.ajax({
+        url: 'https://beta4.api.climatiq.io/estimate', // API 엔드포인트 URL
+        type: 'POST',
+        headers: {
+          'Authorization': 'Bearer 8VN3B3PV99MTM7HK4WHTFVSWJ5DB' // 여기에 실제 API 키를 입력
+        },
+        data: JSON.stringify({
+          "emission_factor": {
+            "activity_id": "passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na",
+            "source": "ADEME",
+            "region": "FR",
+            "year": 2021,
+            "source_lca_activity": "unknown",
+            "data_version": "^1"
+          },
+          "parameters": {
+            "distance": parseFloat(distance), // 거리를 숫자로 변환하여 전달
+            "distance_unit": "km"
+          }
+        }),
+        contentType: 'application/json',
+
+        success: function(response) {
+          // API 응답 받았을 때 실행되는 함수
+          var responseData = response; // 이미 JSON 형식으로 파싱되었으므로 파싱 과정 생략
+          $('#result').text(responseData.co2e); // CO2 배출량 화면에 표시
+        },
+
+        error: function(xhr, status, error) {
+          // 요청 실패 시 실행되는 함수
+          console.log(error);
         }
-        </script>
+      });
+    });
+  });
+
+  function calculateElectricity() {
+    // Get the input value
+    var input = document.getElementById("use-Electricity").value;
+
+    if (input == "") {
+      // 아무것도 입력하지 않은 경우 사용한 전기량을 입력하지 않았다고 한다
+      document.getElementById("electricityResult").textContent = "사용한 전기량(kw)을 입력하세요.";
+    } else if (input<0) {
+        document.getElementById("electricityResult").textContent = "잘못된 입력입니다. 양수 값을 입력해주세요.";
+    } else {
+      // input에 값이 입력되었을 경우 이산화탄소 환산량을 계산 및 화면에 출력한다
+      var result = (input * 0.424).toFixed(2);
+      document.getElementById("electricityResult").textContent = "배출한 이산화탄소 환산량은 " + result + "KgCO2e 입니다";
+    }
+  }
+
+</script>
     </head>
     <body>
 
@@ -211,8 +222,8 @@
                 <div class="user-wrapper">
                     <!--<img src="img/2.jpg" width="40px" height="40px" alt="">-->
                     <div>
-                        <h4>John Doe</h4>
-                        <small>Supder admin</small>
+                        <h4>Non User</h4>
+                        <small>Please to Login</small>
                     </div>
                 </div>
             </header>
@@ -240,10 +251,11 @@
                     <div class = "Scope2_main" >
                         <h4>
                             현재 한전의 CO2 배출 계산기 기준 전기 1kw당 CO2 배출량은 0.424kg 입니다.
-                        </h4>
+                        </h4><br>
 
-                        <input type = "number" placeholder = "전기사용량(Kw)">
-                    </div>
+                        <input type="number" id="use-Electricity" placeholder="사용한 전기를 입력하세요(kw)" />
+                        <button onclick="calculateElectricity()">계산하기</button>
+                        <h2 id="electricityResult"></h2>
                 </div>
 
                 <div class = "Scope3">
@@ -264,27 +276,30 @@
                                 </div>
                             </div>
 
-                            <button onclick="addDestination()">추가</button>  
+                            <!--<button onclick="addDestination()">추가</button>  
                             <div class = "total_cal" style="padding-top : 0.5rem; color : #0099ff;">
                                 <h3>누적 총합 : </h3>
-                            </div>
+                            </div> -->
                     </div>
                 </div>
 
                 <div class = "Analysis">
-                    <div class = "write" style="position: left;">
-                        <h2>
+                    <div class = "write" style="display: flex; align-items: center;">
+                        <h2 style="flex: 1;">
                             전체 분석
                         </h2>
+                        <button style="position: right;">결과 확인</button>
                     </div>
-                    
-                    <button style="position: right;">결과 확인</button>
                     <div class = "Analysis_main">
                         <img class="penguin" src = "penguin300.png" style="margin-left: auto; margin-right: auto; display: block;" width = "300px", height = "auto">
-
                     </div>
                 </div>
 
+
+
+                <div class = "last-memo">
+                    <h4>© Somnium Corp. All rights reserved.</h4>
+                </div>
             </main>
         </div>
     </body>

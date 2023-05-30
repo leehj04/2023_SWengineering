@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>거리 정보 확인</title>
+  <style>
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>출발지와 도착지 선택</h2>
+    <label for="start">출발지:</label>
+    <select id="start">
+      <!-- 여기에 출발지 버튼을 추가하려면 JavaScript에서 옵션을 동적으로 추가해야 합니다. -->
+    </select>
+    <br>
+    <label for="destination">도착지:</label>
+    <select id="destination">
+      <!-- 여기에 도착지 드롭다운 버튼을 추가하려면 JavaScript에서 옵션을 동적으로 추가해야 합니다. -->
+    </select>
+    <br>
+    <button onclick="calculateDistance()">확인</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // CSV 파일에서 출발지와 도착지 정보를 가져옵니다.
+    function getDestinations(csvFilePath) {
+      // 이 부분을 실제로 CSV 파일을 읽어와서 처리하는 로직으로 대체해야 합니다.
+      // 여기서는 예시로 미리 정의된 출발지-도착지 데이터를 사용합니다.
+      const destinations = {
+        '출발지1': ['도착지1', '도착지2', '도착지3'],
+        '출발지2': ['도착지4', '도착지5', '도착지6'],
+        '출발지3': ['도착지7', '도착지8', '도착지9']
+      };
+      return destinations[csvFilePath];
+    }
+
+    // 출발지 버튼을 선택했을 때 해당하는 도착지 목록을 드롭다운 메뉴에 추가합니다.
+    function updateDestinationOptions() {
+      const startSelect = document.getElementById('start');
+      const selectedStart = startSelect.value;
+      const destinationSelect = document.getElementById('destination');
+      destinationSelect.innerHTML = '';
+
+      const destinations = getDestinations(selectedStart);
+      destinations.forEach(function (destination) {
+        const option = document.createElement('option');
+        option.text = destination;
+        destinationSelect.add(option);
+      });
+    }
+
+    // 확인 버튼을 클릭했을 때 거리 정보를 계산하고 출력합니다.
+    function calculateDistance() {
+      const startSelect = document.getElementById('start');
+      const selectedStart = startSelect.value;
+      const destinationSelect = document.getElementById('destination');
+      const selectedDestination = destinationSelect.value;
+      
+      // 여기에 거리를 계산하고 출력하는 로직을 추가해야 합니다.
+      // 예시로 선택된 출발지와 도착지를 출력해보겠습니다.
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `출발지: ${selectedStart}<br>도착지: ${selectedDestination}`;
+    }
+
+    // 초기화면에서 출발지 버튼 옵션을 설정합니다.
+    function setStartOptions() {
+      const startSelect = document.getElementById('start');
+      const startOptions = ['출발지1', '출발지2', '출발지3'];
+      startOptions.forEach(function (start) {
+        const option = document.createElement('option');
+        option.text = start;
+        startSelect.add(option);
+      });
+    }
+
+    // 페이지가 로드될 때 초기화 작업을 수행합니다.
+    window.onload = function () {
+      setStartOptions();
+    };
+  </script>
+</body>
+</html>

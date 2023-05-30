@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CO2 배출량 계산기</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#calculateBtn').click(function() {
+        var distance = $('#distanceInput').val(); // 입력된 거리 가져오기
+
+        // API 요청 보내기
+        $.ajax({
+          url: 'https://beta4.api.climatiq.io/estimate', // API 엔드포인트 URL
+          type: 'POST',
+          headers: {
+            'Authorization': 'Bearer 8VN3B3PV99MTM7HK4WHTFVSWJ5DB' // 여기에 실제 API 키를 입력
+          },
+          data: JSON.stringify({
+            "emission_factor": {
+              "activity_id": "passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na",
+              "source": "ADEME",
+              "region": "FR",
+              "year": 2021,
+              "source_lca_activity": "unknown",
+              "data_version": "^1"
+            },
+            "parameters": {
+              "distance": parseFloat(distance), // 거리를 숫자로 변환하여 전달
+              "distance_unit": "km"
+            }
+          }),
+          contentType: 'application/json',
+
+          success: function(response) {
+            // API 응답 받았을 때 실행되는 함수
+            var responseData = response; // 이미 JSON 형식으로 파싱되었으므로 파싱 과정 생략
+            $('#result').text(responseData.co2e); // CO2 배출량 화면에 표시
+          },
+
+          error: function(xhr, status, error) {
+            // 요청 실패 시 실행되는 함수
+            console.log(error);
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>CO2 배출량 계산기</h1>
+  <input type="number" id="distanceInput" placeholder="거리를 입력하세요 (km)" />
+  <button id="calculateBtn">계산하기</button>
+  <div id="result"></div>
+</body>
+</html>
