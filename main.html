@@ -8,9 +8,79 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-
         <input type="checkbox" id="nav-toggle">
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <h2><span class="lab la-accusoft"></span> <span>Somnium</span></h2>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a href="main.html" class="active"><span class="las la-igloo"></span>
+                        <span>Dashboard</span></a>
+                        
+                    </li>                 
+                    <li>
+                        <a href="product.html" id="productButton"><span class="las la-shopping-bag"></span>
+                        <span>Product</span></a>
 
+                        <div class="popupContainer" id="popupContainer">
+                            <div class="popupContent" id="popupContent">
+                            <h2>You need to Login</h2>
+                            <p>Click the button below for Login.</p>
+                            <br>
+                            <a class="myButton" href="SignIn.html">Go to Login</a>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.getElementById("productButton").addEventListener("click", function(e) {
+                                e.preventDefault();
+
+                                if (!isLoggedIn()) {
+                                    showLoginPopup();
+                                } else {
+                                    window.location.href = "product.html";
+                                }
+                            });
+
+                            function showLoginPopup() {
+                                document.getElementById("popupContainer").style.display = "block";
+                            }
+
+                            function isLoggedIn() {
+                                var username = localStorage.getItem("username");
+                                if (username) {
+                                    return true;
+                                }
+                                else{
+                                    return false;
+                                }
+                            }
+                        </script>
+                          
+                    </li>
+                    <li>
+                        <a href="analyze.html"><span class="las la-receipt"></span>
+                            <span>Analyze</span></a>
+                    </li>
+                    <li>
+                        <a href="accounts.html"><span class="las la-user-circle"></span>
+                            <span>Accounts</span></a>
+                    </li>
+                    <li>
+                        <a href="employee.html"><span class="las la-users"></span>
+                            <span>Employee</span></a>
+                    </li>
+                    <li>
+                        <a href="Tasks.html"><span class="las la-clipboard-list"></span>
+                            <span>Tasks</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
         <div class="main-content">
             <header>
                 <h2>
@@ -304,78 +374,5 @@
                 </div>
             </main>
         </div>
-
-        <div class="sidebar">
-            <div class="sidebar-brand">
-                <h2><span class="lab la-accusoft"></span> <span>Somnium</span></h2>
-            </div>
-            
-            <div class="sidebar-menu">
-                <ul>
-                    <li>
-                        <a href="main.html" class="active"><span class="las la-igloo"></span>
-                        <span>Dashboard</span></a>
-                        
-                    </li>                 
-                    <li>
-                        <a href="product.html" id="productButton"><span class="las la-shopping-bag"></span>
-                        <span>Product</span></a>
-
-                        <div class="popupContainer" id="popupContainer">
-                            <div class="popupContent" id="popupContent">
-                            <h2>You need to Login</h2>
-                            <p>Click the button below for Login.</p>
-                            <br>
-                            <a class="myButton" href="SignIn.html">Go to Login</a>
-                            </div>
-                        </div>
-
-                        <script>
-                            document.getElementById("productButton").addEventListener("click", function(e) {
-                                e.preventDefault();
-
-                                if (!isLoggedIn()) {
-                                    showLoginPopup();
-                                } else {
-                                    window.location.href = "product.html";
-                                }
-                            });
-
-                            function showLoginPopup() {
-                                document.getElementById("popupContainer").style.display = "block";
-                            }
-
-                            function isLoggedIn() {
-                                var username = localStorage.getItem("username");
-                                if (username) {
-                                    return true;
-                                }
-                                else{
-                                    return false;
-                                }
-                            }
-                        </script>
-                          
-                    </li>
-                    <li>
-                        <a href="analyze.html"><span class="las la-receipt"></span>
-                            <span>Analyze</span></a>
-                    </li>
-                    <li>
-                        <a href="accounts.html"><span class="las la-user-circle"></span>
-                            <span>Accounts</span></a>
-                    </li>
-                    <li>
-                        <a href="employee.html"><span class="las la-users"></span>
-                            <span>Employee</span></a>
-                    </li>
-                    <li>
-                        <a href="Tasks.html"><span class="las la-clipboard-list"></span>
-                            <span>Tasks</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
     </body>
 </html>
