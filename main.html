@@ -273,8 +273,44 @@
                         
                     </li>                 
                     <li>
-                        <a href="product.html"><span class="las la-shopping-bag"></span>
+                        <a href="product.html" id="productButton"><span class="las la-shopping-bag"></span>
                         <span>Product</span></a>
+
+                        <div class="popupContainer" id="popupContainer">
+                            <div class="popupContent" id="popupContent">
+                            <h2>You need to Login</h2>
+                            <p>Click the button below for Login.</p>
+                            <br>
+                            <a class="myButton" href="SignIn.html">Go to Login</a>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.getElementById("productButton").addEventListener("click", function(e) {
+                                e.preventDefault();
+
+                                if (!isLoggedIn()) {
+                                    showLoginPopup();
+                                } else {
+                                    window.location.href = "product.html";
+                                }
+                            });
+
+                            function showLoginPopup() {
+                                document.getElementById("popupContainer").style.display = "block";
+                            }
+
+                            function isLoggedIn() {
+                                var username = localStorage.getItem("username");
+                                if (username) {
+                                    return true;
+                                }
+                                else{
+                                    return false;
+                                }
+                            }
+                        </script>
+                          
                     </li>
                     <li>
                         <a href="analyze.html"><span class="las la-receipt"></span>

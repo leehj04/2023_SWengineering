@@ -21,13 +21,9 @@
 
   <script>
     document.getElementById("loginForm").addEventListener("submit", function(event) {
-      event.preventDefault(); // 폼 기본 제출 동작 방지
-
-      // 입력한 아이디와 비밀번호 가져오기
+      event.preventDefault();
       var username = document.getElementById("username").value;
 
-      // 로그인 프로세스를 구현하고, 필요에 따라 서버와의 통신 등을 수행합니다.
-      // 여기서는 로컬 스토리지에 아이디를 저장하고 메인 화면으로 자동으로 이동합니다.
       localStorage.setItem("username", username);
       window.location.href = "main.html";
     });
