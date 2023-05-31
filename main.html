@@ -9,6 +9,14 @@
     </head>
     <body>
 
+        <script>
+            // 페이지가 로드되면 실행되는 함수
+            window.onload = function() {
+              // 로컬 스토리지 초기화
+              localStorage.clear();
+            };
+        </script>
+
         <input type="checkbox" id="nav-toggle">
         <div class="sidebar">
             <div class="sidebar-brand">
@@ -62,9 +70,30 @@
                 <div class="user-wrapper">
                     <!--<img src="img/2.jpg" width="40px" height="40px" alt="">-->
                     <div>
-                        <button class="myButton" id="SignInButton">Sign in</button>
-                        <button class="myButton" id="SignUpButton">Sign up</button>
-                        <script src="login.js"></script>
+                        <p id="username"></p>
+                        <button class="myButton" id="loginButton">login</button>
+
+                        <script>
+                            // 페이지가 로드되면 실행되는 함수
+                            window.onload = function() {
+                            // 로그인 정보 가져오기
+                            var username = localStorage.getItem("username");
+
+                            // 가져온 로그인 정보를 메인 화면에 표시
+                            if (username) {
+                                document.getElementById("username").textContent = username;
+                                document.getElementById("loginButton").style.display = "none";
+                            }
+                            else{
+                                document.getElementById("loginButton").style.display = "inline-block";
+                            }
+
+                            // 로그인 버튼 클릭 시 로그인 페이지로 이동
+                            document.getElementById("loginButton").addEventListener("click", function() {
+                                window.location.href = "SignIn.html";
+                            });
+                            };
+                        </script>
                     </div>
                 </div>
             </header>
