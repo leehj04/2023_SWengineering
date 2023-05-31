@@ -8,7 +8,6 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-
         <input type="checkbox" id="nav-toggle">
         <div class="sidebar">
             <div class="sidebar-brand">
@@ -19,11 +18,48 @@
                 <ul>
                     <li>
                         <a href="main.html" class="active"><span class="las la-igloo"></span>
-                            <span>Dashboard</span></a>
+                        <span>Dashboard</span></a>
+                        
                     </li>                 
                     <li>
-                        <a href="product.html"><span class="las la-shopping-bag"></span>
-                            <span>Product</span></a>
+                        <a href="product.html" id="productButton"><span class="las la-shopping-bag"></span>
+                        <span>Product</span></a>
+
+                        <div class="popupContainer" id="popupContainer">
+                            <div class="popupContent" id="popupContent">
+                            <h2>You need to Login</h2>
+                            <p>Click the button below for Login.</p>
+                            <br>
+                            <a class="myButton" href="SignIn.html">Go to Login</a>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.getElementById("productButton").addEventListener("click", function(e) {
+                                e.preventDefault();
+
+                                if (!isLoggedIn()) {
+                                    showLoginPopup();
+                                } else {
+                                    window.location.href = "product.html";
+                                }
+                            });
+
+                            function showLoginPopup() {
+                                document.getElementById("popupContainer").style.display = "block";
+                            }
+
+                            function isLoggedIn() {
+                                var username = localStorage.getItem("username");
+                                if (username) {
+                                    return true;
+                                }
+                                else{
+                                    return false;
+                                }
+                            }
+                        </script>
+                          
                     </li>
                     <li>
                         <a href="analyze.html"><span class="las la-receipt"></span>
@@ -44,7 +80,7 @@
                 </ul>
             </div>
         </div>
-
+        
         <div class="main-content">
             <header>
                 <h2>
@@ -62,19 +98,64 @@
                 <div class="user-wrapper">
                     <!--<img src="img/2.jpg" width="40px" height="40px" alt="">-->
                     <div>
-                        <h4>Non User</h4>
-                        <small>Please to Login</small>
+                        <p id="username"></p>
+                        <button class="myButton" id="loginButton">Login</button>
+                        <button class="myButton2" id="logoutButton" style="display: none;">Logout</button>
+
+                        <script>
+                            window.onload = function() {
+                                var username = localStorage.getItem("username");
+
+                                if (username) {
+                                    document.getElementById("username").textContent = username;
+                                    document.getElementById("username").style.display = "inline-block";
+                                    document.getElementById("loginButton").style.display = "none";
+                                    document.getElementById("logoutButton").style.display = "inline-block";
+                                }
+                                else{
+                                    document.getElementById("loginButton").style.display = "inline-block";
+                                    document.getElementById("logoutButton").style.display = "none";
+                                }
+
+                                document.getElementById("loginButton").addEventListener("click", function() {
+                                    window.location.href = "SignIn.html";
+                                });
+
+                                document.getElementById("logoutButton").addEventListener("click", function() {
+                                    localStorage.removeItem("username");
+                                    window.location.reload();
+                                });
+                            };
+                        </script>
                     </div>
                 </div>
             </header>
             
             <main>
-
                 <div class="cards">
-
+                    <script>
+                    function isLoggedIn() {
+                        var username = localStorage.getItem("username");
+                        if (username) {
+                            return true;
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                    </script>
                     <div class="card-single">
                         <div>
-                            <h1>3</h1>
+                            <h1 id="employeeNum"></h1>
+                            <script>
+                                var loginStatusElement = document.getElementById("employeeNum");
+
+                                if (isLoggedIn()) {
+                                    loginStatusElement.textContent = "3";
+                                } else {
+                                    loginStatusElement.textContent = "-";
+                                }
+                            </script>
                             <span>Employees</span>
                         </div>
                         <div>
@@ -84,7 +165,16 @@
 
                     <div class="card-single">
                         <div>
-                            <h1>124</h1>
+                            <h1 id="visitNum"></h1>
+                            <script>
+                                var loginStatusElement = document.getElementById("visitNum");
+
+                                if (isLoggedIn()) {
+                                    loginStatusElement.textContent = "124";
+                                } else {
+                                    loginStatusElement.textContent = "-";
+                                }
+                            </script>
                             <span>Visits</span>
                         </div>
                         <div>
@@ -94,7 +184,16 @@
 
                     <div class="card-single">
                         <div>
-                            <h1>2</h1>
+                            <h1 id="partnerNum"></h1>
+                            <script>
+                                var loginStatusElement = document.getElementById("partnerNum");
+
+                                if (isLoggedIn()) {
+                                    loginStatusElement.textContent = "2";
+                                } else {
+                                    loginStatusElement.textContent = "-";
+                                }
+                            </script>
                             <span>Partner</span>
                         </div>
                         <div>
@@ -104,7 +203,16 @@
 
                     <div class="card-single">
                         <div>
-                            <h1>0ton</h1>
+                            <h1 id="CO2eNum"></h1>
+                            <script>
+                                var loginStatusElement = document.getElementById("CO2eNum");
+
+                                if (isLoggedIn()) {
+                                    loginStatusElement.textContent = "0ton";
+                                } else {
+                                    loginStatusElement.textContent = "-";
+                                }
+                            </script>
                             <span>(CO2e) Reduced</span></br>
                             <span>(Last month)</span>
                         </div>
@@ -265,7 +373,6 @@
                     <h4>© Somnium Corp. All rights reserved.</h4>
                 </div>
             </main>
-            
         </div>
     </body>
 </html>

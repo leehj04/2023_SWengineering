@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign In</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="login.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1 >login</h1>
+    <form id="loginForm">
+      <label for="username">username:</label>
+      <input type="text" id="username" required>
+
+      <label for="password">password:</label>
+      <input type="password" id="password" required>
+
+      <button type="submit">login</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      var username = document.getElementById("username").value;
+
+      localStorage.setItem("username", username);
+      window.location.href = "main.html";
+    });
+  </script>
+
+</body>
+</html>

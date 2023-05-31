@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>운송 수단 계산기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group select, .form-group input {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .form-group button {
+            margin-left: 10px;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .result span {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>운송 수단 계산기</h2>
+
+        <div id="form-container">
+            <div class="form-group">
+                <label for="vehicle">운송 수단 선택:</label>
+                <select class="vehicle-select">
+                    <option value="truck">화물차</option>
+                    <option value="ship">선박</option>
+                    <option value="plane">화물기</option>
+                </select>
+                <label for="distance">이동 거리 입력:</label>
+                <input type="number" class="distance-input" min="0" required>
+                <button onclick="calculate(this)">확인</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button onclick="addForm()">추가</button>
+            <button onclick="calculateTotal()">총합</button>
+        </div>
+
+        <div class="result">
+            결과: <span id="output"></span>
+        </div>
+    </div>
+
+    <script>
+        var total = 0;
+
+        function calculate(button) {
+            var formGroup = button.parentElement;
+            var vehicle = formGroup.querySelector(".vehicle-select").value;
+            var distance = formGroup.querySelector(".distance-input").value;
+            var output = document.getElementById("output");
+
+            var result = 0;
+            if (vehicle === "truck") {
+                result = distance * 1;
+            } else if (vehicle === "ship") {
+                result = distance * 2;
+            } else if (vehicle === "plane") {
+                result = distance * 3;
+            }
+
+            output.textContent = result;
+            output.dataset.result = result;
+        }
+
+        function addForm() {
+            var formGroup = document.createElement("div");
+            formGroup.classList.add("form-group");
+
+            var vehicleSelect = document.createElement("select");
+            vehicleSelect.classList.add("vehicle-select");
+            vehicleSelect.innerHTML = '<option value="truck">화물차</option><option value="ship">선박</option><option value="plane">화물기</option>';
+
+            var distanceInput = document.createElement("input");
+            distanceInput.classList.add("distance-input");
+            distanceInput.type = "number";
+            distanceInput.min = "0";
+            distanceInput.required = true;
+
+            var calculateButton = document.createElement("button");
+            calculateButton.textContent = "확인";
+            calculateButton.onclick = function () {
+                calculate(this);
+            };
+
+            formGroup.appendChild(vehicleSelect);
+            formGroup.appendChild(distanceInput);
+            formGroup.appendChild(calculateButton);
+
+            var container = document.getElementById("form-container");
+            container.appendChild(formGroup);
+        }
+
+        function calculateTotal() {
+            var output = document.getElementById("output");
+            total = 0;
+
+            var formGroups = document.querySelectorAll(".form-group");
+            formGroups.forEach(function (formGroup) {
+                var result = parseInt(formGroup.querySelector("button").dataset.result);
+                if (!isNaN(result)) {
+                    total += result;
+                }
+            });
+
+            output.textContent = total;
+        }
+    </script>
+</body>
+</html>

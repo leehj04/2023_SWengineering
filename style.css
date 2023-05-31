@@ -449,3 +449,89 @@ tr td:last-child {
         grid-template-columns: 100%;
     }
 }
+
+.myButton {
+    background: var(--main-color);
+    border-radius: .6rem;
+    display:inline-block;
+	cursor:pointer;
+    color: #fff;
+    font-size: .9rem;
+    padding: .5rem 1rem;
+    border: 1px solid var(--main-color);
+    text-decoration:none;
+}
+.myButton2 {
+    background: #fff;
+    border-radius: .6rem;
+    display:inline-block;
+	cursor:pointer;
+    color: rgb(0, 0, 0);
+    font-size: .9rem;
+    padding: .5rem 1rem;
+    border: 1px solid var(--main-color);
+    text-decoration:none;
+}
+
+.container {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: .5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 10rem;
+  }
+
+  .container h2 {
+    text-align: center;
+  }
+
+  .container label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  .container input[type="text"],
+  .container input[type="password"] {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .container button {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--main-color);
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: .3rem;
+  }
+
+  .container button:hover {
+    background-color: var(--main-color);
+  }
+  
+  .popupContainer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+  }
+  .popupContent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 2rem;
+  }
