@@ -461,6 +461,17 @@ tr td:last-child {
     border: 1px solid var(--main-color);
     text-decoration:none;
 }
+.myButton2 {
+    background: #fff;
+    border-radius: 6px;
+    display:inline-block;
+	cursor:pointer;
+    color: rgb(0, 0, 0);
+    font-size: .9rem;
+    padding: .5rem 1rem;
+    border: 1px solid var(--main-color);
+    text-decoration:none;
+}
 
 .container {
     max-width: 400px;
