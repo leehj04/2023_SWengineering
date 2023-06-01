@@ -235,8 +235,35 @@
                 <div class="user-wrapper">
                     <!--<img src="img/2.jpg" width="40px" height="40px" alt="">-->
                     <div>
-                        <h4>Non User</h4>
-                        <small>Please to Login</small>
+                        <p id="username"></p>
+                        <button class="myButton" id="loginButton">Login</button>
+                        <button class="myButton2" id="logoutButton" style="display: none;">Logout</button>
+
+                        <script>
+                            window.onload = function() {
+                                var username = localStorage.getItem("username");
+
+                                if (username) {
+                                    document.getElementById("username").textContent = username;
+                                    document.getElementById("username").style.display = "inline-block";
+                                    document.getElementById("loginButton").style.display = "none";
+                                    document.getElementById("logoutButton").style.display = "inline-block";
+                                }
+                                else{
+                                    document.getElementById("loginButton").style.display = "inline-block";
+                                    document.getElementById("logoutButton").style.display = "none";
+                                }
+
+                                document.getElementById("loginButton").addEventListener("click", function() {
+                                    window.location.href = "SignIn.html";
+                                });
+
+                                document.getElementById("logoutButton").addEventListener("click", function() {
+                                    localStorage.removeItem("username");
+                                    window.location.reload();
+                                });
+                            };
+                        </script>
                     </div>
                 </div>
             </header>
