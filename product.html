@@ -88,12 +88,24 @@
                 cursor : pointer;
             }
 
-            .Analysis_main {
-                background: rgb(233, 233, 233);
+            .form-group input {
+                padding-left : 0.5rem;
+                background: rgb(255, 255, 255);
                 outline: none;
                 border-radius: 10px;
                 padding: .5rem 1rem;
                 margin-bottom : 2rem;
+                border: 1px solid var(--main-color);
+            }
+
+            .vehicle-select {
+                background: rgb(200, 233, 233);
+                border-radius: 10px;
+                color: black;
+                font-size: .8rem;
+                padding: .5rem 1rem;
+                border: 2px solid black;
+                cursor : pointer;
             }
 
             .write > button {
@@ -118,7 +130,7 @@
         url: 'https://beta4.api.climatiq.io/estimate', // API 엔드포인트 URL
         type: 'POST',
         headers: {
-          'Authorization': 'Bearer 8VN3B3PV99MTM7HK4WHTFVSWJ5DB' // 여기에 실제 API 키를 입력
+          'Authorization': 'Bearer <api_num>' // 여기에 실제 API 키를 입력
         },
         data: JSON.stringify({
           "emission_factor": {
@@ -270,14 +282,151 @@
                     <div class = "Scope3_main">
                         <h4>
                         </h4>
-                            <div id="map"></div>
-                            <div id="destination-container">
+                            <div id="destination-container" style="padding-bottom:0.5rem;">
                                 <div class="input-group">
                                     <button onclick="window.open('https://www.airportal.go.kr/knowledge/statsnew/data/airportDistance.jsp')" target=”_blank” style="margin-right : 0.4rem;">항공운항거리 알아보기<span class="las la-arrow-right"></span></button>
                                     <button onclick="window.open('http://www.khoa.go.kr/kcom/cnt/selectContentsPage.do?cntId=31307000')"target=”_blank” style="margin-right : 0.4rem;">해상거리 알아보기</span><span class="las la-arrow-right"></span></button>
                                     <button onclick="window.open('https://map.naver.com/v5/directions/14145893.290077027,4514535.114904711,%EC%88%98%EC%9D%98%EA%B3%BC%EB%8C%80%ED%95%99,18834904,PLACE_POI/14115711.002767313,4518422.264936179,%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EC%84%9C%EA%B5%AC%20%ED%95%98%EB%8A%98%EA%B8%B8%2038,,ADDRESS_POI/-/car?c=11,0,0,0,dh')"target=”_blank” style="margin-right : 0.4rem;">(국내)차량거리 알아보기</span><span class="las la-arrow-right"></span></button>
                                     <button onclick="window.open('https://www.google.co.kr/maps/dir/Port+of+Tokyo,+4-ch%C5%8Dme-8+Ariake,+Koto+City,+Tokyo+135-0063+%EC%9D%BC%EB%B3%B8/%EB%8F%84%EC%BF%84+%E6%9D%B1%E4%BA%AC/@35.6170068,139.7543565,13z/data=!4m14!4m13!1m5!1m1!1s0x60186272fa29a979:0xcba97dcf8bb814b4!2m2!1d139.795556!2d35.616944!1m5!1m1!1s0x60188b857628235d:0xcdd8aef709a2b520!2m2!1d139.7690174!2d35.6803997!3e0?hl=ko&entry=ttu')"target=”_blank” style="margin-right : 0.4rem;">(국외)차량거리 알아보기</span><span class="las la-arrow-right"></span></button>
                                 </div>
+                            </div>
+
+                            <div class = "input-destination">
+                                <div id="form-container">
+                                    <div class="form-group">
+                                        <label>경로 1</label>
+                                        <input type="text" placeholder="출발지" class="start_dest"  required>
+                                        <input type="text" placeholder="도착지" class="finish_dest"  required>
+                                        <select class="vehicle-select">
+                                            <option value="menu">운송수단 선택</option>
+                                            <option value="truck">화물차</option>
+                                            <option value="ship">선박</option>
+                                            <option value="plane">화물기</option>
+                                        </select>
+                                        <input type="number" placeholder="물품의 무게(ton) 입력" class="weight-input" min="0" required>
+                                        <input type="number" placeholder="이동거리(km) 입력" class="distance-input" min="0" required>
+                                        <button class="calculate-button" onclick="calculate(this)">확인</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button onclick="addForm()">추가</button>
+                                    <button onclick="cancelLastForm()">취소</button>
+                                    <button onclick="resetCalculator()">누작값 리셋</button>
+                                </div>
+
+                                <div id="error-message" class="error-message"></div>
+                                
+                                <h2><output id="output" class="result"></output></h2> <!-- Added output element for displaying the result -->
+                                <h2><output id="accumulated-output" class="result"></output></h2> <!-- Added output element for displaying the accumulated result -->
+
+                                <script>
+                                    var formCounter = 1;
+                                    var formContainer = document.getElementById("form-container");
+                                    var errorMessage = document.getElementById("error-message");
+                                    var output = document.getElementById("output");
+                                    var accumulatedOutput = document.getElementById("accumulated-output");
+                                    var accumulatedResult = 0;
+                            
+                                    function calculate(button) {
+                                        var formGroup = button.parentElement;
+                                        var vehicle = formGroup.querySelector(".vehicle-select").value;
+                                        var weight = formGroup.querySelector(".weight-input").value;
+                                        var distance = formGroup.querySelector(".distance-input").value;
+                            
+                                        if(vehicle === "menu") {
+                                            errorMessage.textContent = "운송수단을 선택하세요.";
+                                            return;
+                                        }
+                                        if (!weight || !distance) {
+                                            errorMessage.textContent = "무게(ton)와 거리(km)를 입력하세요.";
+                                            return;
+                                        } else {
+                                            errorMessage.textContent = "";
+                                        }
+                            
+                                        var result = 0;
+                                        if (vehicle === "truck") {
+                                            result = 0.4749 * distance * weight;
+                                        } else if (vehicle === "ship") {
+                                            result = 0.01597764 * distance * weight;
+                                        } else if (vehicle === "plane") {
+                                            if(distance > 3700){
+                                                result = 0.68 * distance * weight;
+                                            } else if (distance > 1000){
+                                                result = 0.69 * distance * weight;
+                                            } else{
+                                                result = 0.92 * distance * weight;
+                                            }
+                                        }
+                                        output.textContent = result.toFixed(3) + "kgCO2e";
+                            
+                                        // Accumulate the result
+                                        accumulatedResult += result;
+                                        accumulatedOutput.textContent = "누적 값: " + accumulatedResult.toFixed(3) + "kgCO2e";
+                                    }
+                            
+                                    function addForm() {
+                                        formCounter++;
+                                        var formGroup = document.createElement("div");
+                                        formGroup.classList.add("form-group");
+                            
+                                        var label = document.createElement("label");
+                                        label.textContent = "경로 " + formCounter;
+                            
+                                        var vehicleSelect = document.createElement("select");
+                                        vehicleSelect.classList.add("vehicle-select");
+                                        vehicleSelect.innerHTML =
+                                            '<option>운송수단 선택</option><option value="truck">화물차</option><option value="ship">선박</option><option value="plane">화물기</option>';
+                            
+                                        var weightInput = document.createElement("input");
+                                        weightInput.classList.add("weight-input");
+                                        weightInput.type = "number";
+                                        weightInput.placeholder = "무게 입력";
+                                        weightInput.min = "0";
+                            
+                                        var distanceInput = document.createElement("input");
+                                        distanceInput.classList.add("distance-input");
+                                        distanceInput.type = "number";
+                                        distanceInput.placeholder = "이동거리 입력";
+                                        distanceInput.min = "0";
+                                        distanceInput.required = true;
+                            
+                                        var calculateButton = document.createElement("button");
+                                        calculateButton.classList.add("calculate-button");
+                                        calculateButton.textContent = "확인";
+                                        calculateButton.onclick = function () {
+                                            calculate(this);
+                                        };
+                            
+                                        var result = document.createElement("span");
+                                        result.classList.add("result");
+                            
+                                        formGroup.appendChild(label);
+                                        formGroup.appendChild(vehicleSelect);
+                                        formGroup.appendChild(weightInput);
+                                        formGroup.appendChild(distanceInput);
+                                        formGroup.appendChild(calculateButton);
+                                        formGroup.appendChild(result);
+                            
+                                        formContainer.appendChild(formGroup);
+                                    }
+                            
+                                    function cancelLastForm() {
+                                        if (formCounter > 1) {
+                                            formCounter--;
+                                            var forms = formContainer.querySelectorAll(".form-group");
+                                            var lastForm = forms[forms.length - 1];
+                                            formContainer.removeChild(lastForm);
+                                        }
+                                    }
+                            
+                                    function resetCalculator() {
+                                        accumulatedResult = 0;
+                                        accumulatedOutput.textContent = ""; // Clear the accumulated result
+                                    }
+                                </script>
+
                             </div>
 
                             <!--<button onclick="addDestination()">추가</button>  

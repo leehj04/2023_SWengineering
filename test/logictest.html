@@ -32,6 +32,13 @@
 
         .form-group button {
             margin-left: 10px;
+            background: #0099ff;
+            color: white;
+            outline: none;
+            border-radius: 10px;
+            padding: .5rem 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid #0099ff;
         }
 
         .result {
@@ -42,99 +49,146 @@
         .result span {
             color: green;
         }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>운송 수단 계산기</h2>
-
         <div id="form-container">
             <div class="form-group">
-                <label for="vehicle">운송 수단 선택:</label>
+                <label>경로 1</label>
                 <select class="vehicle-select">
+                    <option value="menu">운송수단 선택</option>
                     <option value="truck">화물차</option>
                     <option value="ship">선박</option>
                     <option value="plane">화물기</option>
                 </select>
-                <label for="distance">이동 거리 입력:</label>
-                <input type="number" class="distance-input" min="0" required>
-                <button onclick="calculate(this)">확인</button>
+                <input type="number" placeholder="무게 입력" class="weight-input" min="0">
+                <input type="number" placeholder="이동거리 입력" class="distance-input" min="0" required>
+                <button class="calculate-button" onclick="calculate(this)">확인</button>
             </div>
         </div>
 
         <div class="form-group">
             <button onclick="addForm()">추가</button>
-            <button onclick="calculateTotal()">총합</button>
+            <button onclick="cancelLastForm()">취소</button>
+            <button onclick="resetCalculator()">리셋</button> <!-- Added reset button -->
         </div>
 
-        <div class="result">
-            결과: <span id="output"></span>
-        </div>
+        <div id="error-message" class="error-message"></div>
+
+        <output id="output" class="result"></output> <!-- Added output element for displaying the result -->
+        <output id="accumulated-output" class="result"></output> <!-- Added output element for displaying the accumulated result -->
     </div>
 
     <script>
-        var total = 0;
+        var formCounter = 1;
+        var formContainer = document.getElementById("form-container");
+        var errorMessage = document.getElementById("error-message");
+        var output = document.getElementById("output");
+        var accumulatedOutput = document.getElementById("accumulated-output");
+        var accumulatedResult = 0;
 
         function calculate(button) {
             var formGroup = button.parentElement;
             var vehicle = formGroup.querySelector(".vehicle-select").value;
+            var weight = formGroup.querySelector(".weight-input").value;
             var distance = formGroup.querySelector(".distance-input").value;
-            var output = document.getElementById("output");
+
+            if(vehicle === "menu") {
+                errorMessage.textContent = "운송수단을 선택하세요.";
+                return;
+            }
+            if (!weight || !distance) {
+                errorMessage.textContent = "무게(ton)와 거리(km)를 입력하세요.";
+                return;
+            } else {
+                errorMessage.textContent = "";
+            }
 
             var result = 0;
             if (vehicle === "truck") {
-                result = distance * 1;
+                result = 0.4749 * distance * weight;
             } else if (vehicle === "ship") {
-                result = distance * 2;
+                result = 0.01597764 * distance * weight;
             } else if (vehicle === "plane") {
-                result = distance * 3;
+                if(distance > 3700){
+                    result = 0.68 * distance * weight;
+                } else if (distance > 1000){
+                    result = 0.69 * distance * weight;
+                } else{
+                    result = 0.92 * distance * weight;
+                }
             }
+            output.textContent = result.toFixed(3) + "kgCO2e";
 
-            output.textContent = result;
-            output.dataset.result = result;
+            // Accumulate the result
+            accumulatedResult += result;
+            accumulatedOutput.textContent = "누적 값: " + accumulatedResult.toFixed(3) + "kgCO2e";
         }
 
         function addForm() {
+            formCounter++;
             var formGroup = document.createElement("div");
             formGroup.classList.add("form-group");
 
+            var label = document.createElement("label");
+            label.textContent = "경로 " + formCounter;
+
             var vehicleSelect = document.createElement("select");
             vehicleSelect.classList.add("vehicle-select");
-            vehicleSelect.innerHTML = '<option value="truck">화물차</option><option value="ship">선박</option><option value="plane">화물기</option>';
+            vehicleSelect.innerHTML =
+                '<option>운송수단 선택</option><option value="truck">화물차</option><option value="ship">선박</option><option value="plane">화물기</option>';
+
+            var weightInput = document.createElement("input");
+            weightInput.classList.add("weight-input");
+            weightInput.type = "number";
+            weightInput.placeholder = "무게 입력";
+            weightInput.min = "0";
 
             var distanceInput = document.createElement("input");
             distanceInput.classList.add("distance-input");
             distanceInput.type = "number";
+            distanceInput.placeholder = "이동거리 입력";
             distanceInput.min = "0";
             distanceInput.required = true;
 
             var calculateButton = document.createElement("button");
+            calculateButton.classList.add("calculate-button");
             calculateButton.textContent = "확인";
             calculateButton.onclick = function () {
                 calculate(this);
             };
 
+            var result = document.createElement("span");
+            result.classList.add("result");
+
+            formGroup.appendChild(label);
             formGroup.appendChild(vehicleSelect);
+            formGroup.appendChild(weightInput);
             formGroup.appendChild(distanceInput);
             formGroup.appendChild(calculateButton);
+            formGroup.appendChild(result);
 
-            var container = document.getElementById("form-container");
-            container.appendChild(formGroup);
+            formContainer.appendChild(formGroup);
         }
 
-        function calculateTotal() {
-            var output = document.getElementById("output");
-            total = 0;
+        function cancelLastForm() {
+            if (formCounter > 1) {
+                formCounter--;
+                var forms = formContainer.querySelectorAll(".form-group");
+                var lastForm = forms[forms.length - 1];
+                formContainer.removeChild(lastForm);
+            }
+        }
 
-            var formGroups = document.querySelectorAll(".form-group");
-            formGroups.forEach(function (formGroup) {
-                var result = parseInt(formGroup.querySelector("button").dataset.result);
-                if (!isNaN(result)) {
-                    total += result;
-                }
-            });
-
-            output.textContent = total;
+        function resetCalculator() {
+            accumulatedResult = 0;
+            accumulatedOutput.textContent = ""; // Clear the accumulated result
         }
     </script>
 </body>

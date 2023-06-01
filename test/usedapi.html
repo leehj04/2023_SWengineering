@@ -7,6 +7,7 @@
     $(document).ready(function() {
       $('#calculateBtn').click(function() {
         var distance = $('#distanceInput').val(); // 입력된 거리 가져오기
+        var weight = $('#weightInput').val();
 
         // API 요청 보내기
         $.ajax({
@@ -17,15 +18,17 @@
           },
           data: JSON.stringify({
             "emission_factor": {
-              "activity_id": "passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na",
-              "source": "ADEME",
-              "region": "FR",
-              "year": 2021,
-              "source_lca_activity": "unknown",
+              "activity_id": "freight_flight-route_type_na-distance_long_haul_gt_3700km-weight_na-rf_excluded-method_iata_rp1678-aircraft_type_belly_freight-distance_uplift_included",
+              "source": "GLEC",
+              "region": "GLOBAL",
+              "year": 2019,
+              "source_lca_activity": "well_to_wheel",
               "data_version": "^1"
             },
             "parameters": {
-              "distance": parseFloat(distance), // 거리를 숫자로 변환하여 전달
+              "weight": parseFloat(weight),
+              "weight_unit": "t",
+              "distance": parseFloat(distance),
               "distance_unit": "km"
             }
           }),
@@ -49,6 +52,7 @@
 <body>
   <h1>CO2 배출량 계산기</h1>
   <input type="number" id="distanceInput" placeholder="거리를 입력하세요 (km)" />
+  <input type="number" id="weightInput" placeholder="무게를 입력하세요 (km)" />
   <button id="calculateBtn">계산하기</button>
   <div id="result"></div>
 </body>
